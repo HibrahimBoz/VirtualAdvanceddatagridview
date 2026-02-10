@@ -32,6 +32,6 @@ Original work by **Davide Gironi** and **Zuby**.
 ## License
 
 Copyright (c) Davide Gironi, 2015  
-Modified work Copyright (c) 2024 Halil İbrahim Bozoğlu  
+Modified work Copyright (c) 2026 Halil İbrahim Bozoğlu  
 Virtual ADGV is open source software licensed under the [Microsoft Public License (Ms-PL) license](http://opensource.org/licenses/MS-PL)  
 Original work Copyright (c), 2013 Zuby <zuby@me.com> http://adgv.codeplex.com

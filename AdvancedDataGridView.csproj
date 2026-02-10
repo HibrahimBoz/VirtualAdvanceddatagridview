@@ -23,6 +23,7 @@
     <PackageId>VirtualADGV</PackageId>
     <PackageTags>DataGridView, WinForms, Advanced, Enhanced, Table, Grid, Filter, Sort, VirtualMode</PackageTags>
     <PackageProjectUrl>https://github.com/HibrahimBoz/VirtualAdvanceddatagridview</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>
     </PackageLicenseExpression>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -32,6 +33,10 @@
     <Copyright>Copyright (c) Davide Gironi, 2013</Copyright>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Include="LICENSE">
       <Pack>True</Pack>
