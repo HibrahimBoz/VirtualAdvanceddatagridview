@@ -1,35 +1,46 @@
 # Virtual ADGV
 
+[English](#english) | [Türkçe](#türkçe)
+
+---
+
+<a name="english"></a>
+## English
+
 **Virtual ADGV (Virtual Advanced DataGridView)** is an enhanced fork of the original **[Advanced DataGridView](https://github.com/davidegironi/advanceddatagridview)**. It is a .NET WinForms **DataGridView with advanced Filtering and Sorting** capabilities, now updated with dedicated support for **Virtual Mode** and fixes for modern .NET environments.
 
-## Download
+### Download
 
 * **[NuGet (VirtualADGV)](https://www.nuget.org/packages/VirtualADGV)**
 * **[GitHub Repository](https://github.com/HibrahimBoz/VirtualAdvanceddatagridview)**
-* **[Latest Release](https://github.com/HibrahimBoz/VirtualAdvanceddatagridview/releases/latest)**
 
-## Key Features & Improvements
+### Key Features & Improvements
 
 * **[NEW] Virtual Mode Support**: Specifically optimized to handle large datasets (millions of rows) efficiently using DataGridView's Virtual Mode.
 * **[FIX] Modern .NET Resource Loading**: Resolved the `MissingManifestResourceException` commonly encountered in .NET 5, 6, 7, and 8 environments.
 * **Advanced Filtering & Sorting**: Retains the powerful Excel-like filtering and multi-column sorting from the original ADGV.
-* **Cross-Platform Compatibility**: Supports .NET 5.0, 6.0, 7.0, and 8.0 Windows environments.
 
-## Requirements
+---
 
-* Microsoft Windows with .NET 5, 6, 7, 8 or later.
+<a name="türkçe"></a>
+## Türkçe
 
-## Usage (Virtual Mode)
+**Virtual ADGV (Virtual Advanced DataGridView)**, orijinal **[Advanced DataGridView](https://github.com/davidegironi/advanceddatagridview)** projesinin geliştirilmiş bir fork'udur. .NET WinForms için **gelişmiş Filtreleme ve Sıralama** yeteneklerine sahip olan bu bileşen, **Virtual Mode (Sanal Mod)** desteği ve modern .NET ortamları için kritik hata düzeltmeleri ile güncellenmiştir.
 
-To use Virtual Mode with VirtualADGV, ensure you handle the `CellValueNeeded` event and set the `VirtualMode` property to `true`. This fork ensures that icons and filter menus load correctly even when the grid is in virtual mode.
+### İndir
 
-## Development & Fork Info
+* **[NuGet (VirtualADGV)](https://www.nuget.org/packages/VirtualADGV)**
+* **[GitHub Deposu](https://github.com/HibrahimBoz/VirtualAdvanceddatagridview)**
 
-This project is a fork maintained by **Halil İbrahim Bozoğlu**. It aims to provide critical fixes and performance features for high-performance data analytics applications.
+### Temel Özellikler ve İyileştirmeler
 
-Original work by **Davide Gironi** and **Zuby**.
+* **[YENİ] Virtual Mode Desteği**: Milyonlarca satırlık büyük veri setlerini DataGridView'in Sanal Modu'nu kullanarak verimli bir şekilde işlemek için optimize edildi.
+* **[DÜZELTME] Modern .NET Kaynak Yükleme**: .NET 5, 6, 7 ve 8 ortamlarında sıkça karşılaşılan `MissingManifestResourceException` hatası çözüldü.
+* **Gelişmiş Filtreleme ve Sıralama**: Orijinal ADGV'nin sunduğu güçlü Excel tarzı filtreleme ve çok sütunlu sıralama özelliklerini korur.
 
-## License
+---
+
+## License / Lisans
 
 Copyright (c) Davide Gironi, 2015  
 Modified work Copyright (c) 2026 Halil İbrahim Bozoğlu  
