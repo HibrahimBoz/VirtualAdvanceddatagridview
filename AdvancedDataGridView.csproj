@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Zuby.ADGV</RootNamespace>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AssemblyName>AdvancedDataGridView</AssemblyName>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Title>Virtual ADGV</Title>
+    <Description>.NET WinForms DataGridView with advanced Filtering and Sorting capabilities - Enhanced Fork with Virtual Mode Support and Resource Loading Fix.</Description>
+    <PackageReleaseNotes>Initial release of VirtualADGV (Fork of Zuby.ADGV). Added full Virtual Mode support and fixed resource loading issues for modern .NET versions.</PackageReleaseNotes>
+    <Product>Virtual ADGV</Product>
+    <Authors>Davide Gironi (Original), Halil İbrahim Bozoğlu (Virtual Support)</Authors>
+    <Company>RecordAnalyzer</Company>
+    <RepositoryUrl>https://github.com/HibrahimBoz/VirtualAdvanceddatagridview</RepositoryUrl>
+    <PackageId>VirtualADGV</PackageId>
+    <PackageTags>DataGridView, WinForms, Advanced, Enhanced, Table, Grid, Filter, Sort, VirtualMode</PackageTags>
+    <PackageProjectUrl>https://github.com/HibrahimBoz/VirtualAdvanceddatagridview</PackageProjectUrl>
+    <PackageLicenseExpression>
+    </PackageLicenseExpression>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>AdvancedDataGridView_logo.png</PackageIcon>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>Copyright (c) Davide Gironi, 2013</Copyright>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>
+      </PackagePath>
+    </None>
+    <None Include="README.md" Link="README.md">
+      <Pack>True</Pack>
+      <PackagePath>
+      </PackagePath>
+    </None>
+    <None Include="Resources\Images\AdvancedDataGridView_logo.png">
+      <Pack>True</Pack>
+      <PackagePath>
+      </PackagePath>
+    </None>
+  </ItemGroup>
+</Project>
+
