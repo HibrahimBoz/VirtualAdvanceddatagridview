@@ -9,13 +9,13 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AssemblyName>AdvancedDataGridView</AssemblyName>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
-    <PackageVersion>1.0.1</PackageVersion>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <FileVersion>1.1.0</FileVersion>
+    <PackageVersion>1.1.0</PackageVersion>
     <Title>Virtual ADGV</Title>
-    <Description>.NET WinForms DataGridView with advanced Filtering and Sorting capabilities - Enhanced Fork with Virtual Mode Support and Resource Loading Fix.</Description>
-    <PackageReleaseNotes>Initial release of VirtualADGV (Fork of Zuby.ADGV). Added full Virtual Mode support and fixed resource loading issues for modern .NET versions.</PackageReleaseNotes>
+    <Description>.NET WinForms DataGridView with advanced Filtering and Sorting capabilities - Enhanced Fork with Virtual Mode Support and High-Performance Selection Logic.</Description>
+    <PackageReleaseNotes>v1.1.0: Added advanced Virtual Mode selection (Shift/Ctrl/Range support), enhanced scrolling performance for large datasets, and seamless native-to-virtual selection promotion.</PackageReleaseNotes>
     <Product>Virtual ADGV</Product>
     <Authors>Davide Gironi (Original), Halil İbrahim Bozoğlu (Virtual Support)</Authors>
     <Company>RecordAnalyzer</Company>

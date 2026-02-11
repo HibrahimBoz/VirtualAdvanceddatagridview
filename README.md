@@ -16,7 +16,10 @@
 
 ### Key Features & Improvements
 
-* **[NEW] Virtual Mode Support**: Specifically optimized to handle large datasets (millions of rows) efficiently using DataGridView's Virtual Mode.
+* **[NEW] Virtual Mode Support (v1.1.0)**: 
+    * Specifically optimized to handle large datasets (75M+ rows) efficiently.
+    * **Advanced Selection Logic**: Support for Shift-Click, Ctrl-Click, and Range dragging in Virtual Mode.
+    * **Selection Promotion**: Automatically promotes native WinForms selection to high-performance Virtual Selection when interacting with large ranges.
 * **[FIX] Modern .NET Resource Loading**: Resolved the `MissingManifestResourceException` commonly encountered in .NET 5, 6, 7, and 8 environments.
 * **Advanced Filtering & Sorting**: Retains the powerful Excel-like filtering and multi-column sorting from the original ADGV.
 
@@ -34,7 +37,10 @@
 
 ### Temel Özellikler ve İyileştirmeler
 
-* **[YENİ] Virtual Mode Desteği**: Milyonlarca satırlık büyük veri setlerini DataGridView'in Sanal Modu'nu kullanarak verimli bir şekilde işlemek için optimize edildi.
+* **[YENİ] Virtual Mode Desteği (v1.1.0)**: 
+    * Milyonlarca satırlık (75M+) büyük veri setlerini verimli bir şekilde işlemek için optimize edildi.
+    * **Gelişmiş Seçim Mantığı**: Sanal Modda Shift-Tıklama, Ctrl-Tıklama ve Sürükleyerek seçim desteği.
+    * **Seçim Terfisi (Promotion)**: Büyük aralıklarla etkileşime girildiğinde yerel WinForms seçimini yüksek performanslı Sanal Seçime otomatik olarak aktarır.
 * **[DÜZELTME] Modern .NET Kaynak Yükleme**: .NET 5, 6, 7 ve 8 ortamlarında sıkça karşılaşılan `MissingManifestResourceException` hatası çözüldü.
 * **Gelişmiş Filtreleme ve Sıralama**: Orijinal ADGV'nin sunduğu güçlü Excel tarzı filtreleme ve çok sütunlu sıralama özelliklerini korur.
 
