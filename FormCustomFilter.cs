@@ -1,4 +1,4 @@
-#region License
+ï»¿#region License
 // Advanced DataGridView
 //
 // Copyright (c), 2014 Davide Gironi <davide.gironi@gmail.com>
@@ -201,8 +201,8 @@ namespace Zuby.ADGV
 
             // Update Labels
             label_columnName.Font = new Font("Segoe UI Semibold", 10f);
-            label_columnName.Text = "Filtre ölçütü:";
-            this.Text = "Özel Otomatik Filtre";
+            label_columnName.Text = "Filtre Ã¶lÃ§Ã¼tÃ¼:";
+            this.Text = "Ã–zel Otomatik Filtre";
 
             // Style ComboBoxes
             comboBox_filterType.BackColor = Color.White;
@@ -210,7 +210,7 @@ namespace Zuby.ADGV
 
             // Style Buttons
             StyleButton(button_ok, "Tamam", Color.FromArgb(33, 115, 70), Color.White);
-            StyleButton(button_cancel, "Ýptal", Color.White, Color.Black);
+            StyleButton(button_cancel, "Ä°ptal", Color.White, Color.Black);
 
             // Adjust sizing and layout
             this.ClientSize = new Size(420, 200);
@@ -411,7 +411,7 @@ namespace Zuby.ADGV
 
             if (hasError1 || hasError2)
             {
-                MessageBox.Show("Lütfen geçerli deðerler girin.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("LÃ¼tfen geÃ§erli deÄŸerler girin.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -431,7 +431,7 @@ namespace Zuby.ADGV
 
             if (!hasValue1 && !hasValue2)
             {
-                MessageBox.Show("Lütfen en az bir deðer girin.", "Uyarý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("LÃ¼tfen en az bir deÄŸer girin.", "UyarÄ±", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 

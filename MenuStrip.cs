@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 // Advanced DataGridView
 //
 // Copyright (c), 2014 Davide Gironi <davide.gironi@gmail.com>
@@ -143,7 +143,7 @@ namespace Zuby.ADGV
             //resize before hitting ResizeBox so the grip works correctly
             float scalingfactor = GetScalingFactor();
             MinimumSize = new Size(Scale(PreferredSize.Width, scalingfactor), Scale(PreferredSize.Height, scalingfactor));
-            //once the size is set resize the ones that wont change      
+            //oönce the size is set resize the ones that wont change      
             resizeBoxControlHost.Height = Scale(resizeBoxControlHost.Height, scalingfactor);
             resizeBoxControlHost.Width = Scale(resizeBoxControlHost.Width, scalingfactor);
             toolStripSeparator1MenuItem.Height = Scale(toolStripSeparator1MenuItem.Height, scalingfactor);
@@ -604,7 +604,7 @@ namespace Zuby.ADGV
             {
                 // Clear and add loading placeholder
                 _loadedNodes = new TreeNodeItemSelector[] { };
-                TreeNodeItemSelector loadingNode = TreeNodeItemSelector.CreateNode("Y�kleniyor...", null, CheckState.Indeterminate, TreeNodeItemSelector.CustomNodeType.Default);
+                TreeNodeItemSelector loadingNode = TreeNodeItemSelector.CreateNode("Yükleniyor...", null, CheckState.Indeterminate, TreeNodeItemSelector.CustomNodeType.Default);
                 _loadedNodes = new TreeNodeItemSelector[] { loadingNode };
                 _startingNodes = DuplicateNodes(_loadedNodes);
                 ChecklistReloadNodes();
