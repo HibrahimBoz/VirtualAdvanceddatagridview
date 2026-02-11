@@ -216,6 +216,28 @@ namespace Zuby.ADGV
 
         #endregion
 
+        #region Virtual Selection Properties & Fields
+
+        /// <summary>
+        /// Gets or sets whether Virtual Selection Mode is enabled.
+        /// If true, native selection is disabled and a lightweight virtual selection logic is used.
+        /// Default is false (Standard Native Selection).
+        /// </summary>
+        public bool VirtualModeSelectionEnabled { get; set; } = false;
+
+        private HashSet<int> _virtualSelectedRows = new HashSet<int>();
+        private HashSet<int> _virtualSelectedColumns = new HashSet<int>();
+        private Dictionary<int, HashSet<int>> _virtualSelectedCells = new Dictionary<int, HashSet<int>>();
+        private bool _isAllCellsSelected = false;
+        private int _anchorRowIndex = -1;
+        private int _anchorColumnIndex = -1;
+        private int _lastMouseMoveRowIndex = -1;
+        private int _lastMouseMoveColumnIndex = -1;
+
+        public event EventHandler VirtualSelectionChanged;
+
+        #endregion
+
 
         #region constructors
 
@@ -1569,6 +1591,490 @@ namespace Zuby.ADGV
                 if (filterMenu.ActiveSortType != MenuStrip.SortType.None)
                     _sortOrderList.Add(column.Name);
                 SortString = BuildSortString();
+            }
+        }
+
+        #endregion
+
+        #region Virtual Selection Public Methods
+
+        /// <summary>
+        /// Selects all cells in Virtual Mode without creating generic objects.
+        /// </summary>
+        public void VirtualSelectAll()
+        {
+            if (!VirtualModeSelectionEnabled) return;
+
+            _isAllCellsSelected = true;
+            _virtualSelectedRows.Clear();
+            _virtualSelectedCells.Clear();
+            
+            OnVirtualSelectionChanged();
+            Invalidate();
+        }
+
+        /// <summary>
+        /// Clears all virtual selection.
+        /// </summary>
+        public void VirtualClearSelection(bool keepAnchor = false)
+        {
+            if (!VirtualModeSelectionEnabled) return;
+
+            _isAllCellsSelected = false;
+            _virtualSelectedRows.Clear();
+            _virtualSelectedColumns.Clear();
+            _virtualSelectedCells.Clear();
+            
+            if (!keepAnchor)
+            {
+                _anchorRowIndex = -1;
+                _anchorColumnIndex = -1;
+            }
+
+            OnVirtualSelectionChanged();
+            Invalidate();
+        }
+
+        /// <summary>
+        /// Sets the virtual selection state of a specific row.
+        /// </summary>
+        public void SetVirtualRowSelected(int rowIndex, bool selected)
+        {
+            if (!VirtualModeSelectionEnabled) return;
+
+            if (selected)
+                _virtualSelectedRows.Add(rowIndex);
+            else
+                _virtualSelectedRows.Remove(rowIndex);
+        }
+
+        public bool IsVirtualSelectAll => _isAllCellsSelected;
+
+        /// <summary>
+        /// Gets the approximate count of selected cells in Virtual Mode.
+        /// Efficiently calculated without enumerating all cells.
+        /// </summary>
+        public long VirtualSelectedCellCount
+        {
+            get
+            {
+                if (!VirtualModeSelectionEnabled) return 0;
+                if (_isAllCellsSelected) return (long)RowCount * ColumnCount;
+
+                long count = 0;
+                // Entire Columns
+                count += (long)_virtualSelectedColumns.Count * RowCount;
+
+                // Entire Rows (excluding already counted via Columns)
+                long remainingCols = ColumnCount - _virtualSelectedColumns.Count;
+                count += (long)_virtualSelectedRows.Count * remainingCols;
+
+                // Individual Cells
+                foreach (var kvp in _virtualSelectedCells)
+                {
+                    int rIdx = kvp.Key;
+                    if (_virtualSelectedRows.Contains(rIdx)) continue;
+                    
+                    foreach (var cIdx in kvp.Value)
+                    {
+                        if (!_virtualSelectedColumns.Contains(cIdx)) count++;
+                    }
+                }
+                return count;
+            }
+        }
+
+
+        public bool IsVirtualCellSelected(int rowIndex, int columnIndex)
+        {
+            if (!VirtualModeSelectionEnabled) return false;
+            if (_isAllCellsSelected) return true;
+            if (_virtualSelectedColumns.Contains(columnIndex)) return true;
+
+            if (SelectionMode == DataGridViewSelectionMode.FullRowSelect || SelectionMode == DataGridViewSelectionMode.RowHeaderSelect)
+            {
+                return _virtualSelectedRows.Contains(rowIndex);
+            }
+            
+            if (_virtualSelectedCells.TryGetValue(rowIndex, out var cols))
+            {
+                return cols.Contains(columnIndex);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the indices of all selected rows in Virtual Mode.
+        /// </summary>
+        public IEnumerable<int> GetVirtualSelectedRowIndices()
+        {
+            if (!VirtualModeSelectionEnabled) yield break;
+
+            if (_isAllCellsSelected)
+            {
+                for (int i = 0; i < RowCount; i++) yield return i;
+            }
+            else
+            {
+                // Unique set of indices
+                var seen = new HashSet<int>(_virtualSelectedRows);
+                foreach (var index in seen) yield return index;
+
+                foreach (var kvp in _virtualSelectedCells)
+                {
+                    if (seen.Add(kvp.Key)) yield return kvp.Key;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the indices of all selected range (points) in Virtual Mode.
+        /// </summary>
+        public IEnumerable<Point> GetVirtualSelectedCellIndices()
+        {
+            if (!VirtualModeSelectionEnabled) yield break;
+
+            long totalCount = VirtualSelectedCellCount;
+            if (totalCount > 1000000) // 1 Million safety cap for Point generation
+            {
+                // If selection is too large, we should NOT yield millions of Points to avoid OOM.
+                // The caller should use VirtualSelectedCellCount or RowIndices instead.
+                yield break;
+            }
+
+            if (_isAllCellsSelected)
+            {
+                for (int r = 0; r < RowCount; r++)
+                {
+                    for (int c = 0; c < ColumnCount; c++)
+                    {
+                        yield return new Point(c, r);
+                    }
+                }
+            }
+            else
+            {
+                // Support Column Selections
+                var colIndices = _virtualSelectedColumns.ToList();
+
+                // Support Full Rows
+                var rowIndices = _virtualSelectedRows.ToList();
+
+                for (int r = 0; r < RowCount; r++)
+                {
+                    bool fullRow = _virtualSelectedRows.Contains(r);
+                    
+                    for (int c = 0; c < ColumnCount; c++)
+                    {
+                        if (fullRow || _virtualSelectedColumns.Contains(c))
+                        {
+                            yield return new Point(c, r);
+                        }
+                        else if (_virtualSelectedCells.TryGetValue(r, out var cols) && cols.Contains(c))
+                        {
+                            yield return new Point(c, r);
+                        }
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<int> GetVirtualSelectedColumnIndices() => _virtualSelectedColumns;
+
+        protected virtual void OnVirtualSelectionChanged()
+        {
+            VirtualSelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        #endregion
+
+        #region Virtual Selection Logic
+
+        protected override void OnCellPainting(DataGridViewCellPaintingEventArgs e)
+        {
+            if (VirtualModeSelectionEnabled && e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                if (IsVirtualCellSelected(e.RowIndex, e.ColumnIndex))
+                {
+                    // Draw custom selection background - SystemBrushes.Highlight is efficient
+                    e.Graphics.FillRectangle(SystemBrushes.Highlight, e.CellBounds);
+
+                    // Standard HighlightText for selection
+                    var savedForeColor = e.CellStyle.ForeColor;
+                    e.CellStyle.ForeColor = SystemColors.HighlightText;
+
+                    e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Background & ~DataGridViewPaintParts.SelectionBackground);
+                    
+                    e.CellStyle.ForeColor = savedForeColor;
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            base.OnCellPainting(e);
+        }
+
+        protected override void OnCellDoubleClick(DataGridViewCellEventArgs e)
+        {
+            if (VirtualModeSelectionEnabled)
+            {
+                if (e.RowIndex == -1 && e.ColumnIndex >= 0) // Column Header
+                {
+                    if (Control.ModifierKeys == Keys.None) VirtualClearSelection();
+                    if (!_virtualSelectedColumns.Add(e.ColumnIndex)) _virtualSelectedColumns.Remove(e.ColumnIndex);
+                    OnVirtualSelectionChanged();
+                    Invalidate();
+                }
+                else if (e.ColumnIndex == -1 && e.RowIndex >= 0) // Row Header
+                {
+                    if (Control.ModifierKeys == Keys.None) VirtualClearSelection();
+                    if (!_virtualSelectedRows.Add(e.RowIndex)) _virtualSelectedRows.Remove(e.RowIndex);
+                    OnVirtualSelectionChanged();
+                    Invalidate();
+                }
+            }
+            base.OnCellDoubleClick(e);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (VirtualModeSelectionEnabled)
+            {
+                var hit = HitTest(e.X, e.Y);
+                if (hit.Type == DataGridViewHitTestType.Cell || hit.Type == DataGridViewHitTestType.RowHeader)
+                {
+                    Keys modifiers = Control.ModifierKeys;
+                    bool isShift = (modifiers & Keys.Shift) == Keys.Shift;
+                    bool isCtrl = (modifiers & Keys.Control) == Keys.Control;
+                    bool isRightClick = e.Button == MouseButtons.Right;
+
+                    if (isRightClick)
+                    {
+                        // User specifically requested NO SELECTION on right-click.
+                        // By NOT calling base.OnMouseDown(e), we prevent the DataGridView 
+                        // from changing the selection or the CurrentCell.
+                        // The ContextMenuStrip will still be triggered by the OS/WndProc.
+                        return;
+                    }
+
+                    if (!isShift && !isCtrl)
+                    {
+                        // 2. Plain Left Click: Clear Virtual and allow Native Selection
+                        VirtualClearSelection();
+                        
+                        base.OnMouseDown(e);
+                        
+                        _anchorRowIndex = hit.RowIndex;
+                        _anchorColumnIndex = hit.ColumnIndex;
+                        _lastMouseMoveRowIndex = hit.RowIndex;
+                        _lastMouseMoveColumnIndex = hit.ColumnIndex;
+                    }
+                    else
+                    {
+                        // 3. Modifiers present: Support Shift/Ctrl by promoting native to virtual first
+                        PromoteNativeToVirtual();
+                        
+                        if (_anchorRowIndex == -1) 
+                        {
+                            _anchorRowIndex = hit.RowIndex;
+                            _anchorColumnIndex = hit.ColumnIndex;
+                        }
+
+                        HandleVirtualSelection(hit.RowIndex, hit.ColumnIndex, modifiers);
+                        ClearSelection();
+                    }
+                }
+                else
+                {
+                    base.OnMouseDown(e);
+                }
+            }
+            else
+            {
+                base.OnMouseDown(e);
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (VirtualModeSelectionEnabled && e.Button == MouseButtons.Left)
+            {
+                var hit = HitTest(e.X, e.Y);
+                if ((hit.Type == DataGridViewHitTestType.Cell || hit.Type == DataGridViewHitTestType.RowHeader) 
+                    && (hit.RowIndex != _lastMouseMoveRowIndex || hit.ColumnIndex != _lastMouseMoveColumnIndex))
+                {
+                    // Viewport boundary check: If mouse goes outside visible rows, PROMOTE to virtual
+                    int firstVisible = FirstDisplayedScrollingRowIndex;
+                    int lastVisible = firstVisible + DisplayedRowCount(true);
+                    
+                    bool isEnteringVirtualRange = hit.RowIndex < firstVisible || hit.RowIndex >= lastVisible || VirtualSelectedCellCount > 0;
+
+                    if (isEnteringVirtualRange)
+                    {
+                        PromoteNativeToVirtual();
+                        
+                        _lastMouseMoveRowIndex = hit.RowIndex;
+                        _lastMouseMoveColumnIndex = hit.ColumnIndex;
+                        
+                        HandleVirtualSelection(hit.RowIndex, hit.ColumnIndex, Keys.Shift);
+                        ClearSelection();
+                    }
+                    else
+                    {
+                        // Visible drag: Use native selection
+                        _lastMouseMoveRowIndex = hit.RowIndex;
+                        _lastMouseMoveColumnIndex = hit.ColumnIndex;
+                        base.OnMouseMove(e);
+                    }
+                }
+            }
+            else
+            {
+                base.OnMouseMove(e);
+            }
+        }
+
+        /// <summary>
+        /// Converts the current WinForms Native Selection (Blue border) 
+        /// to Virtual Selection (Blue block) for high-performance interaction.
+        /// </summary>
+        private void PromoteNativeToVirtual()
+        {
+            if (SelectedCells.Count == 0 && SelectedRows.Count == 0) return;
+            if (VirtualSelectedCellCount > 0) return; // Already virtual
+
+            // Use the anchor from mouse down if available
+            // Note: SelectedCells might be in reverse order of selection
+            
+            foreach (DataGridViewCell cell in SelectedCells)
+            {
+                AddVirtualSelection(cell.RowIndex, cell.ColumnIndex);
+            }
+
+            // Also handle full rows if selected natively
+            foreach (DataGridViewRow row in SelectedRows)
+            {
+                _virtualSelectedRows.Add(row.Index);
+            }
+            
+            // Note: Native Column selection in DGV is rare via UI, but if present:
+            // (Skipped for now as DoubleClick header already handles virtual columns)
+
+            ClearSelection();
+        }
+
+        private void HandleVirtualSelection(int rowIndex, int colIndex, Keys modifiers)
+        {
+            bool isCtrl = (modifiers & Keys.Control) == Keys.Control;
+            bool isShift = (modifiers & Keys.Shift) == Keys.Shift;
+
+            if (!isCtrl && !isShift)
+            {
+                // New Single Selection
+                VirtualClearSelection(); 
+                _anchorRowIndex = rowIndex;
+                _anchorColumnIndex = colIndex;
+                AddVirtualSelection(rowIndex, colIndex);
+            }
+            else if (isCtrl)
+            {
+                // Toggle Selection (Anchor moves to new focus)
+                _anchorRowIndex = rowIndex;
+                _anchorColumnIndex = colIndex;
+                ToggleVirtualSelection(rowIndex, colIndex);
+            }
+            else if (isShift)
+            {
+                // Range Selection (Anchor stays put!)
+                if (_anchorRowIndex == -1) _anchorRowIndex = rowIndex;
+                if (_anchorColumnIndex == -1) _anchorColumnIndex = colIndex;
+
+                // Clear previous *temporary* range parts, but we need to know what was selected *before* the shift click starts?
+                // Native behavior: The selection assumes the state from the Anchor.
+                // Simplified Virtual approach: Clear everything and re-select from Anchor to Current.
+                // BUT if Ctrl was used before, we might have multiple gaps.
+                // Standard Shift-Click usually extends from the *last* anchor to current, ignoring gaps? 
+                // Actually, Windows Explorer Shift-Click resets other selections often unless Ctrl is also held.
+                // Let's implement Excel-like/Native DGV: Shift-Click selects range from Anchor to Current.
+                // It usually clears other selections UNLESS Ctrl is held too?
+                // For simplified high-perf: Clear and select range.
+                
+                // If we want to support Ctrl+Shift (Add Range), we check both.
+                if (!isCtrl) VirtualClearSelection(keepAnchor: true); 
+
+                SelectVirtualRange(_anchorRowIndex, _anchorColumnIndex, rowIndex, colIndex);
+            }
+
+            OnVirtualSelectionChanged();
+            Invalidate();
+        }
+
+        private void AddVirtualSelection(int rowIndex, int colIndex)
+        {
+             if (SelectionMode == DataGridViewSelectionMode.FullRowSelect || SelectionMode == DataGridViewSelectionMode.RowHeaderSelect)
+             {
+                 _virtualSelectedRows.Add(rowIndex);
+             }
+             else
+             {
+                 if (!_virtualSelectedCells.ContainsKey(rowIndex))
+                     _virtualSelectedCells[rowIndex] = new HashSet<int>();
+                 
+                 _virtualSelectedCells[rowIndex].Add(colIndex);
+             }
+        }
+
+        private void ToggleVirtualSelection(int rowIndex, int colIndex)
+        {
+             if (SelectionMode == DataGridViewSelectionMode.FullRowSelect || SelectionMode == DataGridViewSelectionMode.RowHeaderSelect)
+             {
+                 if (_virtualSelectedRows.Contains(rowIndex))
+                    _virtualSelectedRows.Remove(rowIndex);
+                 else
+                    _virtualSelectedRows.Add(rowIndex);
+             }
+             else
+             {
+                 if (IsVirtualCellSelected(rowIndex, colIndex))
+                 {
+                     if (_virtualSelectedCells.ContainsKey(rowIndex))
+                         _virtualSelectedCells[rowIndex].Remove(colIndex);
+                 }
+                 else
+                 {
+                     AddVirtualSelection(rowIndex, colIndex);
+                 }
+             }
+        }
+
+        private void SelectVirtualRange(int r1, int c1, int r2, int c2)
+        {
+            int minR = Math.Min(r1, r2);
+            int maxR = Math.Max(r1, r2);
+            int minC = Math.Min(c1, c2);
+            int maxC = Math.Max(c1, c2);
+
+            if (SelectionMode == DataGridViewSelectionMode.FullRowSelect || SelectionMode == DataGridViewSelectionMode.RowHeaderSelect)
+            {
+                 for (int r = minR; r <= maxR; r++)
+                 {
+                     _virtualSelectedRows.Add(r);
+                 }
+            }
+            else
+            {
+                 // Cell Select Mode
+                 for (int r = minR; r <= maxR; r++)
+                 {
+                     if (!_virtualSelectedCells.ContainsKey(r))
+                         _virtualSelectedCells[r] = new HashSet<int>();
+                     
+                     for (int c = minC; c <= maxC; c++)
+                     {
+                          _virtualSelectedCells[r].Add(c);
+                     }
+                 }
             }
         }
 
