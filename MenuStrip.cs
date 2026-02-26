@@ -220,7 +220,20 @@ namespace Zuby.ADGV
             button_filter.Location = new Point(checkFilterListButtonsPanel.Width - button_filter.Width - padding, (checkFilterListButtonsPanel.Height - button_filter.Height) / 2);
             button_undofilter.Location = new Point(button_filter.Left - button_undofilter.Width - padding, (checkFilterListButtonsPanel.Height - button_undofilter.Height) / 2);
 
-            // 5. Search Placeholder Logic
+            // 5. Menu Item Text Colors
+            foreach (ToolStripItem item in this.Items)
+            {
+                item.ForeColor = _isDarkMode ? Color.White : Color.Black;
+                if (item is ToolStripDropDownItem dropDownItem)
+                {
+                    foreach (ToolStripItem subItem in dropDownItem.DropDownItems)
+                    {
+                        subItem.ForeColor = _isDarkMode ? Color.White : Color.Black;
+                    }
+                }
+            }
+
+            // 6. Search Placeholder Logic
             UpdateSearchPlaceholder();
             checkTextFilter.Enter += (s, e) => { if (checkTextFilter.Text == "Ara") { checkTextFilter.Text = ""; checkTextFilter.ForeColor = Color.Black; } };
             checkTextFilter.Leave += (s, e) => { UpdateSearchPlaceholder(); };
@@ -2375,6 +2388,5 @@ namespace Zuby.ADGV
         public override Color ImageMarginGradientEnd => _isDarkMode ? Color.FromArgb(30, 41, 59) : Color.White;
         public override Color MenuItemPressedGradientBegin => _isDarkMode ? Color.FromArgb(51, 65, 85) : Color.FromArgb(220, 230, 240);
         public override Color MenuItemPressedGradientEnd => _isDarkMode ? Color.FromArgb(51, 65, 85) : Color.FromArgb(220, 230, 240);
-        public override Color MenuItemText => _isDarkMode ? Color.White : Color.Black;
     }
 }
