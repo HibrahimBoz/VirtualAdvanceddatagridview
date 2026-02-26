@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 // Advanced DataGridView
 //
 // Copyright (c), 2014 Davide Gironi <davide.gironi@gmail.com>
@@ -17,8 +17,9 @@ using System.Drawing.Drawing2D;
 
 namespace Zuby.ADGV
 {
-    internal partial class FormCustomFilter : Form
+    public partial class FormCustomFilter : Form
     {
+        private bool _isDarkMode = false;
 
         #region class properties
 

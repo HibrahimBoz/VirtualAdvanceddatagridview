@@ -197,12 +197,18 @@ namespace Zuby.ADGV
             checkList.ShowPlusMinus = true;
             checkList.ShowRootLines = false;
 
-            // 4. Button Layout Refinement
-            int padding = 5;
-            button_filter.Size = new Size(80, 26);
-            button_undofilter.Size = new Size(80, 26);
-            button_filter.Location = new Point(checkFilterListButtonsPanel.Width - button_filter.Width - padding, 3);
-            button_undofilter.Location = new Point(button_filter.Left - button_undofilter.Width - padding, 3);
+            // 4. Panel and Button Layout Refinement
+            checkFilterListButtonsPanel.Height = 40; // Force a consistent height
+            int padding = 10;
+            button_filter.Size = new Size(85, 28);
+            button_undofilter.Size = new Size(85, 28);
+            
+            // Link layout to the panel
+            button_filter.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            button_undofilter.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            
+            button_filter.Location = new Point(checkFilterListButtonsPanel.Width - button_filter.Width - padding, (checkFilterListButtonsPanel.Height - button_filter.Height) / 2);
+            button_undofilter.Location = new Point(button_filter.Left - button_undofilter.Width - padding, (checkFilterListButtonsPanel.Height - button_undofilter.Height) / 2);
 
             // 5. Search Placeholder Logic
             UpdateSearchPlaceholder();
@@ -956,7 +962,7 @@ namespace Zuby.ADGV
                                 FilterString += "[{0}] =" + filter;
                             else if (DataType == typeof(int) || DataType == typeof(long) || DataType == typeof(short) ||
                                      DataType == typeof(uint) || DataType == typeof(ulong) || DataType == typeof(ushort) ||
-                                     DataType == typeof(decimal) ||
+                                     DataType == typeof(decimal) || DataType == typeof(double) || DataType == typeof(float) ||
                                      DataType == typeof(byte) || DataType == typeof(sbyte) || DataType == typeof(string))
                             {
                                 if (IsFilterNOTINLogicEnabled)
@@ -2180,9 +2186,12 @@ namespace Zuby.ADGV
             checkFilterListControlHost.Size = new Size(Scale(w2 - 35, scalingfactor), Scale(h2 - 160 - 25, scalingfactor));
             checkFilterListPanel.Size = checkFilterListControlHost.Size;
             checkList.Bounds = new Rectangle(Scale(4, scalingfactor), Scale(4, scalingfactor), Scale(w2 - 35 - 8, scalingfactor), Scale(h2 - 160 - 25 - 8, scalingfactor));
-            checkFilterListButtonsControlHost.Size = new Size(Scale(w2 - 35, scalingfactor), Scale(24, scalingfactor));
-            button_filter.Location = new Point(Scale(w2 - 35 - 164, scalingfactor), 0);
-            button_undofilter.Location = new Point(Scale(w2 - 35 - 79, scalingfactor), 0);
+            checkFilterListButtonsControlHost.Size = new Size(Scale(w2 - 35, scalingfactor), Scale(40, scalingfactor));
+            checkFilterListButtonsPanel.Size = checkFilterListButtonsControlHost.Size;
+            // Native ADGV code manually positioned buttons at 0, which caused overlap. 
+            // We now rely on AnchorStyles and our Panel-based layout.
+            // Only update positions if NOT using the modern style, or better yet, just let the panel handle it.
+            // button_filter.Location = ... (removed manual overrides)
             resizeBoxControlHost.Margin = new Padding(Scale(w2 - 46, scalingfactor), 0, 0, 0);
 
             //get all objects height to make sure we have room for the grip
@@ -2200,11 +2209,10 @@ namespace Zuby.ADGV
                 checkFilterListButtonsControlHost.Height +
                 resizeBoxControlHost.Height;
 
-            // apply the needed height only when scaled
-            if (scalingfactor == 1)
-                Size = new Size(w, h);
-            else
-                Size = new Size(w, h + (finalHeight - h < 0 ? 0 : finalHeight - h));
+            // apply the needed height
+            // We must ensure that the final Size.Height is at least finalHeight to avoid cutting off buttons
+            int calculatedHeight = Math.Max(h, finalHeight);
+            Size = new Size(w, calculatedHeight);
 
         }
 
