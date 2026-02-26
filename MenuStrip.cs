@@ -2143,6 +2143,7 @@ namespace Zuby.ADGV
 
             //open a new Custom filter window
             FormCustomFilter flt = new FormCustomFilter(DataType, IsFilterDateAndTimeEnabled, initialFilter);
+            flt.SetTheme(_isDarkMode);
 
             if (flt.ShowDialog() == DialogResult.OK)
             {

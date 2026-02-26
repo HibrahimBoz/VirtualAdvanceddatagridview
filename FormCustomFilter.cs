@@ -20,6 +20,11 @@ namespace Zuby.ADGV
     public partial class FormCustomFilter : Form
     {
         private bool _isDarkMode = false;
+        public void SetTheme(bool isDarkMode)
+        {
+            _isDarkMode = isDarkMode;
+            ApplyModernStyle();
+        }
 
         #region class properties
 
@@ -209,9 +214,17 @@ namespace Zuby.ADGV
 
         private void ApplyModernStyle()
         {
-            this.BackColor = Color.FromArgb(243, 243, 243);
+            if (_isDarkMode)
+            {
+                this.BackColor = Color.FromArgb(30, 41, 59);
+                this.ForeColor = Color.White;
+            }
+            else
+            {
+                this.BackColor = Color.FromArgb(243, 243, 243);
+                this.ForeColor = Color.Black;
+            }
             this.Font = new Font("Segoe UI", 9f);
-            this.ForeColor = Color.Black;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
 
             // Update Labels
@@ -220,12 +233,34 @@ namespace Zuby.ADGV
             this.Text = "Özel Otomatik Filtre";
 
             // Style ComboBoxes
-            comboBox_filterType.BackColor = Color.White;
+            if (_isDarkMode)
+            {
+                comboBox_filterType.BackColor = Color.FromArgb(15, 23, 42);
+                comboBox_filterType.ForeColor = Color.White;
+                comboBox_filterType2.BackColor = Color.FromArgb(15, 23, 42);
+                comboBox_filterType2.ForeColor = Color.White;
+            }
+            else
+            {
+                comboBox_filterType.BackColor = Color.White;
+                comboBox_filterType.ForeColor = Color.Black;
+                comboBox_filterType2.BackColor = Color.White;
+                comboBox_filterType2.ForeColor = Color.Black;
+            }
             comboBox_filterType.FlatStyle = FlatStyle.Flat;
+            comboBox_filterType2.FlatStyle = FlatStyle.Flat;
 
             // Style Buttons
-            StyleButton(button_ok, "Tamam", Color.FromArgb(33, 115, 70), Color.White);
-            StyleButton(button_cancel, "İptal", Color.White, Color.Black);
+            if (_isDarkMode)
+            {
+                StyleButton(button_ok, "Tamam", Color.FromArgb(59, 130, 246), Color.White);
+                StyleButton(button_cancel, "İptal", Color.FromArgb(51, 65, 85), Color.White);
+            }
+            else
+            {
+                StyleButton(button_ok, "Tamam", Color.FromArgb(33, 115, 70), Color.White);
+                StyleButton(button_cancel, "İptal", Color.White, Color.Black);
+            }
 
             // Adjust sizing and layout
             this.ClientSize = new Size(420, 200);
