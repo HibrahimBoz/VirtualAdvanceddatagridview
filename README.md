@@ -16,14 +16,11 @@
 
 ### Key Features & Improvements
 
-* **[NEW] Virtual Mode Support (v1.1.0)**: 
-    * Specifically optimized to handle large datasets (75M+ rows) efficiently.
-    * **Advanced Selection Logic**: Support for Shift-Click, Ctrl-Click, and Range dragging in Virtual Mode.
-    * **Selection Promotion**: Automatically promotes native WinForms selection to high-performance Virtual Selection when interacting with large ranges.
-* **[NEW] DuckDB Compatibility & UI Fixes (v1.1.3)**:
-    * **DuckDB SQL Translation**: Fixed `Convert` function syntax for DuckDB compatibility.
+* **[NEW] Full Theme Support (v1.1.4)**:
+    * **SetTheme(bool isDarkMode) API**: Programmatically switch between Dark and Light modes for the entire filter menu, including search boxes, treeviews, and buttons.
+    * **DuckDB Compatibility**: Fixed `Convert` function syntax for DuckDB compatibility.
     * **UI Layout Fixes**: Resolved filter checklist button cutoff and overlap issues.
-    * **Modern Aesthetics**: Applied modern Excel-like styling with full Dark/Light mode support.
+    * **Modern Aesthetics**: Applied modern parametric styling with full high-DPI support.
 * **[FIX] Modern .NET Resource Loading**: Resolved the `MissingManifestResourceException` commonly encountered in .NET 5, 6, 7, and 8 environments.
 * **Advanced Filtering & Sorting**: Retains the powerful Excel-like filtering and multi-column sorting from the original ADGV.
 
@@ -41,14 +38,11 @@
 
 ### Temel Özellikler ve İyileştirmeler
 
-* **[YENİ] Virtual Mode Desteği (v1.1.0)**: 
-    * Milyonlarca satırlık (75M+) büyük veri setlerini verimli bir şekilde işlemek için optimize edildi.
-    * **Gelişmiş Seçim Mantığı**: Sanal Modda Shift-Tıklama, Ctrl-Tıklama ve Sürükleyerek seçim desteği.
-    * **Seçim Terfisi (Promotion)**: Büyük aralıklarla etkileşime girildiğinde yerel WinForms seçimini yüksek performanslı Sanal Seçime otomatik olarak aktarır.
-* **[YENİ] DuckDB Uyumluluğu ve UI Düzeltmeleri (v1.1.3)**:
-    * **DuckDB SQL Çevirisi**: `Convert` fonksiyonu sözdizimi DuckDB uyumluluğu için düzeltildi.
+* **[YENİ] Tam Tema Desteği (v1.1.4)**:
+    * **SetTheme(bool isDarkMode) API**: Arama kutusu, liste ve butonlar dahil tüm filtre menüsünü uygulama temasına (Koyu/Açık) entegre eden yeni API eklendi.
+    * **DuckDB Uyumluluğu**: `Convert` fonksiyonu sözdizimi DuckDB uyumluluğu için düzeltildi.
     * **UI Yerleşim Düzeltmeleri**: Filtre listesi butonlarının kesilme ve üst üste binme sorunları giderildi.
-    * **Modern Estetik**: Koyu/Açık tema destekli, modern Excel benzeri tasarım uygulandı.
+    * **Modern Estetik**: Yüksek DPI destekli, tam parametrik modern tasarım uygulandı.
 * **[DÜZELTME] Modern .NET Kaynak Yükleme**: .NET 5, 6, 7 ve 8 ortamlarında sıkça karşılaşılan `MissingManifestResourceException` hatası çözüldü.
 * **Gelişmiş Filtreleme ve Sıralama**: Orijinal ADGV'nin sunduğu güçlü Excel tarzı filtreleme ve çok sütunlu sıralama özelliklerini korur.
 

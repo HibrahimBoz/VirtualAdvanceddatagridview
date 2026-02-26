@@ -384,6 +384,19 @@ namespace Zuby.ADGV
             this.DoubleBuffered = true;
         }
 
+        /// <summary>
+        /// Set the theme for all filter menus
+        /// </summary>
+        /// <param name="isDarkMode"></param>
+        public void SetTheme(bool isDarkMode)
+        {
+            foreach (ColumnHeaderCell c in FilterableCells)
+            {
+                if (c.MenuStrip != null)
+                    c.MenuStrip.SetTheme(isDarkMode);
+            }
+        }
+
         #endregion
 
 

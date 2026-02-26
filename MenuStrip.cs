@@ -108,6 +108,13 @@ namespace Zuby.ADGV
 
         #region costructors
 
+        private bool _isDarkMode = false;
+        public void SetTheme(bool isDarkMode)
+        {
+            _isDarkMode = isDarkMode;
+            ApplyModernExcelStyle();
+        }
+
         /// <summary>
         /// MenuStrip constructor
         /// </summary>
@@ -173,22 +180,23 @@ namespace Zuby.ADGV
 
         private void ApplyModernExcelStyle()
         {
-            this.Renderer = new ModernMenuRenderer();
-            this.BackColor = Color.White;
+            this.Renderer = new ModernMenuRenderer(_isDarkMode);
+            this.BackColor = _isDarkMode ? Color.FromArgb(30, 41, 59) : Color.White;
             this.DropShadowEnabled = true;
 
             // 1. Search Box (checkTextFilter)
-            checkTextFilter.BackColor = Color.FromArgb(245, 246, 247);
+            checkTextFilter.BackColor = _isDarkMode ? Color.FromArgb(15, 23, 42) : Color.FromArgb(245, 246, 247);
             checkTextFilter.BorderStyle = BorderStyle.FixedSingle;
-            checkTextFilter.ForeColor = Color.DimGray;
+            checkTextFilter.ForeColor = _isDarkMode ? Color.FromArgb(203, 213, 225) : Color.DimGray;
             checkTextFilter.Font = new Font("Segoe UI", 9f);
             
             // 2. Buttons
-            StyleModernButton(button_filter, Color.FromArgb(33, 115, 70), Color.White); // Excel Green
-            StyleModernButton(button_undofilter, Color.FromArgb(243, 243, 243), Color.Black);
+            StyleModernButton(button_filter, _isDarkMode ? Color.FromArgb(34, 197, 94) : Color.FromArgb(33, 115, 70), Color.White); // Green
+            StyleModernButton(button_undofilter, _isDarkMode ? Color.FromArgb(51, 65, 85) : Color.FromArgb(243, 243, 243), _isDarkMode ? Color.White : Color.Black);
 
             // 3. TreeView (checkList)
-            checkList.BackColor = Color.White;
+            checkList.BackColor = _isDarkMode ? Color.FromArgb(30, 41, 59) : Color.White;
+            checkList.ForeColor = _isDarkMode ? Color.White : Color.Black;
             checkList.BorderStyle = BorderStyle.None;
             checkList.Font = new Font("Segoe UI", 9f);
             checkList.FullRowSelect = true;
@@ -196,6 +204,8 @@ namespace Zuby.ADGV
             checkList.ShowLines = false;
             checkList.ShowPlusMinus = true;
             checkList.ShowRootLines = false;
+            
+            checkFilterListButtonsPanel.BackColor = _isDarkMode ? Color.FromArgb(30, 41, 59) : Color.White;
 
             // 4. Panel and Button Layout Refinement
             checkFilterListButtonsPanel.Height = 40; // Force a consistent height
@@ -2343,21 +2353,28 @@ namespace Zuby.ADGV
 
     internal class ModernMenuRenderer : ToolStripProfessionalRenderer
     {
-        public ModernMenuRenderer() : base(new ModernColorTable()) { }
+        public ModernMenuRenderer(bool isDarkMode) : base(new ModernColorTable(isDarkMode)) { }
     }
 
     internal class ModernColorTable : ProfessionalColorTable
     {
-        public override Color MenuItemSelected => Color.FromArgb(230, 240, 250);
-        public override Color MenuItemSelectedGradientBegin => Color.FromArgb(230, 240, 250);
-        public override Color MenuItemSelectedGradientEnd => Color.FromArgb(230, 240, 250);
-        public override Color MenuBorder => Color.FromArgb(210, 210, 210);
+        private bool _isDarkMode;
+        public ModernColorTable(bool isDarkMode) 
+        {
+            _isDarkMode = isDarkMode;
+        }
+
+        public override Color MenuItemSelected => _isDarkMode ? Color.FromArgb(51, 65, 85) : Color.FromArgb(230, 240, 250);
+        public override Color MenuItemSelectedGradientBegin => _isDarkMode ? Color.FromArgb(51, 65, 85) : Color.FromArgb(230, 240, 250);
+        public override Color MenuItemSelectedGradientEnd => _isDarkMode ? Color.FromArgb(51, 65, 85) : Color.FromArgb(230, 240, 250);
+        public override Color MenuBorder => _isDarkMode ? Color.FromArgb(71, 85, 105) : Color.FromArgb(210, 210, 210);
         public override Color MenuItemBorder => Color.Transparent;
-        public override Color ToolStripDropDownBackground => Color.White;
-        public override Color ImageMarginGradientBegin => Color.White;
-        public override Color ImageMarginGradientMiddle => Color.White;
-        public override Color ImageMarginGradientEnd => Color.White;
-        public override Color MenuItemPressedGradientBegin => Color.FromArgb(220, 230, 240);
-        public override Color MenuItemPressedGradientEnd => Color.FromArgb(220, 230, 240);
+        public override Color ToolStripDropDownBackground => _isDarkMode ? Color.FromArgb(30, 41, 59) : Color.White;
+        public override Color ImageMarginGradientBegin => _isDarkMode ? Color.FromArgb(30, 41, 59) : Color.White;
+        public override Color ImageMarginGradientMiddle => _isDarkMode ? Color.FromArgb(30, 41, 59) : Color.White;
+        public override Color ImageMarginGradientEnd => _isDarkMode ? Color.FromArgb(30, 41, 59) : Color.White;
+        public override Color MenuItemPressedGradientBegin => _isDarkMode ? Color.FromArgb(51, 65, 85) : Color.FromArgb(220, 230, 240);
+        public override Color MenuItemPressedGradientEnd => _isDarkMode ? Color.FromArgb(51, 65, 85) : Color.FromArgb(220, 230, 240);
+        public override Color MenuItemText => _isDarkMode ? Color.White : Color.Black;
     }
 }
